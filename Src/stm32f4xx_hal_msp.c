@@ -426,11 +426,14 @@ void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
   GPIO_InitTypeDef   GPIO_InitStruct;
   /*##-1- Enable peripherals and GPIO Clocks #################################*/
   /* TIMx Peripheral clock enable */
-  __HAL_RCC_TIM3_CLK_ENABLE();
+	
+	__HAL_RCC_TIM3_CLK_ENABLE();
+	__HAL_RCC_TIM8_CLK_ENABLE();
 
   /* Enable all GPIO Channels Clock requested */
   __GPIOA_CLK_ENABLE();
   __GPIOB_CLK_ENABLE();
+  __GPIOC_CLK_ENABLE();
 
 
   /* Configure PB.06 (pin 23 in P2 connector) (TIM4_Channel1), PB.07 (pin 24 in P2 connector) (TIM4_Channel2), PB.08 (pin 19 in P2 connector) (TIM4_Channel3),
@@ -441,7 +444,7 @@ void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	
-
+	
   GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
   GPIO_InitStruct.Pin = GPIO_PIN_6;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -453,6 +456,28 @@ void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef *htim)
   GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
   GPIO_InitStruct.Pin = GPIO_PIN_0;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  
+  
+/*#################################*/  
+  GPIO_InitStruct.Alternate = GPIO_AF3_TIM8;
+  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  GPIO_InitStruct.Alternate = GPIO_AF3_TIM8;
+  GPIO_InitStruct.Pin = GPIO_PIN_7;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  GPIO_InitStruct.Alternate = GPIO_AF3_TIM8;
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  
+  
+  
+  
+  
+  
+  
+  
   
   
 
