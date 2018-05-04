@@ -5,6 +5,11 @@
 #define TIMx4_IRQHandler                TIM4_IRQHandler
 
 
+
+extern TIM_HandleTypeDef TimHandle3,TimHandle4,TimHandle5,TimHandle8;
+	
+extern TIM_OC_InitTypeDef Tim3Pwm,Tim8Pwm;
+	
 extern uint32_t nTime_Flage;
 extern uint32_t nTime_Flage_500us;
 extern uint32_t nTime_Flage_100us;

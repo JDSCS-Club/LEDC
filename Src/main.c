@@ -139,6 +139,9 @@ uint16_t nBufCmapCnt = 0;
 * @param -
 * @retval-
 ******************************************************************************/
+
+uint32_t nPwmtimerCount = 0;
+
 int main(void)
 {
 
@@ -151,7 +154,7 @@ int main(void)
     EXTILine0_Config();
     Keypad_GPIO_Init();
     TextLCD_GPIO_Init();
-//    LED_GPIO_Init();  
+    LED_GPIO_Init();  
     Wifi_GPIO_Init();
     
    
@@ -215,6 +218,9 @@ int main(void)
 	
     while (1)
     {
+		
+		nPwmtimerCount = __HAL_TIM_GetCounter(&TimHandle3);
+		
  		if(m_Main_TIM_Cnt == 1000) // LCD는 부팅시 500ms 이후에 동작 하도록 하기 위해 1초 후 초기화 하도록 수정.
 		{
 			m_Main_TIM_Cnt++;
@@ -259,6 +265,15 @@ int main(void)
         USARTRX_MainPro();
 		Flash_Main();
 		
+		
+
+		
+		
+		if(nLedPrintf_Flag && m_Main_TIM_Cnt >= 1000)
+		{
+			nLedPrintf_Flag = 0;
+			LED_init(); // LED 디스 플레이 함수.
+		}
    
 		if(nTime_Flage && (m_Main_TIM_Cnt >= 1000))
 		{

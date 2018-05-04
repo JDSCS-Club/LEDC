@@ -14,9 +14,9 @@
 * @param -
 * @retval-
 ******************************************************************************/
-    TIM_HandleTypeDef TimHandle3,TimHandle4,TimHandle5,TimHandle8;
+ TIM_HandleTypeDef TimHandle3,TimHandle4,TimHandle5,TimHandle8;
 	
-    TIM_OC_InitTypeDef Tim3Pwm,Tim8Pwm;
+ TIM_OC_InitTypeDef Tim3Pwm,Tim8Pwm;
 	
 	
     uint32_t nTime_Flage = 0;
@@ -97,78 +97,79 @@ void Timer_init(void)
   */
 
 
-    //TIM3는 최대 84MHZ 이므로 속도 값이 크다.(500ms)
-    /* Compute the prescaler value to have TIM3 counter clock equal to 10 KHz */
-    uwPrescalerValue_Time3 = (uint32_t) ((SystemCoreClock)/16000000) - 1;
-
-    /* Set TIMx instance */
-    TimHandle3.Instance = TIM3;
-
-    TimHandle3.Init.Period = 1000-1; //주기.
-    TimHandle3.Init.Prescaler = uwPrescalerValue_Time3; //분주
-    TimHandle3.Init.ClockDivision = 0;
-    TimHandle3.Init.CounterMode = TIM_COUNTERMODE_UP;
-	TimHandle3.Init.RepetitionCounter = 0;
-	
-	HAL_TIM_PWM_Init(&TimHandle3);
-	
-//    HAL_TIM_Base_Init(&TimHandle3);
-//    HAL_TIM_Base_Start_IT(&TimHandle3);
-
-/*##-2- Configure the PWM channels #########################################*/
-  /* Common configuration for all channels */
-  Tim3Pwm.OCMode       = TIM_OCMODE_PWM1;
-  Tim3Pwm.OCPolarity   = TIM_OCPOLARITY_HIGH;
-  Tim3Pwm.OCFastMode   = TIM_OCFAST_DISABLE;
-  Tim3Pwm.OCNPolarity  = TIM_OCNPOLARITY_HIGH;
-  Tim3Pwm.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-
-  Tim3Pwm.OCIdleState  = TIM_OCIDLESTATE_RESET;
-
-  /* Set the pulse value for channel 1 */
-  Tim3Pwm.Pulse = 900;
-  if (HAL_TIM_PWM_ConfigChannel(&TimHandle3, &Tim3Pwm, TIM_CHANNEL_1) != HAL_OK)
-  {
-    /* Configuration Error */
-    Timer_Error_Handler();
-  }
-
-  /* Set the pulse value for channel 2 */
-  Tim3Pwm.Pulse = 600;
-  if (HAL_TIM_PWM_ConfigChannel(&TimHandle3, &Tim3Pwm, TIM_CHANNEL_2) != HAL_OK)
-  {
-    /* Configuration Error */
-    Timer_Error_Handler();
-  }
-
-  /* Set the pulse value for channel 3 */
-  Tim3Pwm.Pulse = 300;
-  if (HAL_TIM_PWM_ConfigChannel(&TimHandle3, &Tim3Pwm, TIM_CHANNEL_3) != HAL_OK)
-  {
-    /* Configuration Error */
-    Timer_Error_Handler();
-  }
+//    //TIM3는 최대 84MHZ 이므로 속도 값이 크다.(500ms)
+//    /* Compute the prescaler value to have TIM3 counter clock equal to 10 KHz */
+//    uwPrescalerValue_Time3 = (uint32_t) ((SystemCoreClock /2)/10000000) - 1;
 
 
-  /*##-3- Start PWM signals generation #######################################*/
-  /* Start channel 1 */
-  if (HAL_TIM_PWM_Start(&TimHandle3, TIM_CHANNEL_1) != HAL_OK)
-  {
-    /* PWM Generation Error */
-    Timer_Error_Handler();
-  }
-  /* Start channel 2 */
-  if (HAL_TIM_PWM_Start(&TimHandle3, TIM_CHANNEL_2) != HAL_OK)
-  {
-    /* PWM Generation Error */
-    Timer_Error_Handler();
-  }
-  /* Start channel 3 */
-  if (HAL_TIM_PWM_Start(&TimHandle3, TIM_CHANNEL_3) != HAL_OK)
-  {
-    /* PWM generation Error */
-    Timer_Error_Handler();
-  }
+//    /* Set TIMx instance */
+//    TimHandle3.Instance = TIM3;
+
+//    TimHandle3.Init.Period = 1000-1; //주기.
+//    TimHandle3.Init.Prescaler = uwPrescalerValue_Time3; //분주
+//    TimHandle3.Init.ClockDivision = 0;
+//    TimHandle3.Init.CounterMode = TIM_COUNTERMODE_UP;
+//	TimHandle3.Init.RepetitionCounter = 0;
+//	
+//	HAL_TIM_PWM_Init(&TimHandle3);
+//	
+////    HAL_TIM_Base_Init(&TimHandle3);
+////    HAL_TIM_Base_Start_IT(&TimHandle3);
+
+///*##-2- Configure the PWM channels #########################################*/
+//  /* Common configuration for all channels */
+//  Tim3Pwm.OCMode       = TIM_OCMODE_PWM1;
+//  Tim3Pwm.OCPolarity   = TIM_OCPOLARITY_HIGH;
+//  Tim3Pwm.OCFastMode   = TIM_OCFAST_DISABLE;
+//  Tim3Pwm.OCNPolarity  = TIM_OCNPOLARITY_HIGH;
+//  Tim3Pwm.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+
+//  Tim3Pwm.OCIdleState  = TIM_OCIDLESTATE_RESET;
+
+//  /* Set the pulse value for channel 1 */
+//  Tim3Pwm.Pulse = 0; // Green
+//  if (HAL_TIM_PWM_ConfigChannel(&TimHandle3, &Tim3Pwm, TIM_CHANNEL_1) != HAL_OK)
+//  {
+//    /* Configuration Error */
+//    Timer_Error_Handler();
+//  }
+
+//  /* Set the pulse value for channel 2 */
+//  Tim3Pwm.Pulse = 20; //Blue
+//  if (HAL_TIM_PWM_ConfigChannel(&TimHandle3, &Tim3Pwm, TIM_CHANNEL_2) != HAL_OK)
+//  {
+//    /* Configuration Error */
+//    Timer_Error_Handler();
+//  }
+
+//  /* Set the pulse value for channel 3 */
+//  Tim3Pwm.Pulse = 50; //RED
+//  if (HAL_TIM_PWM_ConfigChannel(&TimHandle3, &Tim3Pwm, TIM_CHANNEL_3) != HAL_OK)
+//  {
+//    /* Configuration Error */
+//    Timer_Error_Handler();
+//  }
+
+
+//  /*##-3- Start PWM signals generation #######################################*/
+//  /* Start channel 1 */
+//  if (HAL_TIM_PWM_Start(&TimHandle3, TIM_CHANNEL_1) != HAL_OK)
+//  {
+//    /* PWM Generation Error */
+//    Timer_Error_Handler();
+//  }
+//  /* Start channel 2 */
+//  if (HAL_TIM_PWM_Start(&TimHandle3, TIM_CHANNEL_2) != HAL_OK)
+//  {
+//    /* PWM Generation Error */
+//    Timer_Error_Handler();
+//  }
+//  /* Start channel 3 */
+//  if (HAL_TIM_PWM_Start(&TimHandle3, TIM_CHANNEL_3) != HAL_OK)
+//  {
+//    /* PWM generation Error */
+//    Timer_Error_Handler();
+//  }
 
 
 
@@ -198,9 +199,9 @@ void Timer_init(void)
     /* Set TIMx instance */
     TimHandle5.Instance = TIM5;
 
-    TimHandle5.Init.Period = 1000-1; //주기.
+    TimHandle5.Init.Period = 10000-1; //주기.
     TimHandle5.Init.Prescaler = uwPrescalerValue_Time5;
-    TimHandle5.Init.ClockDivision = 0;
+    TimHandle5.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
     TimHandle5.Init.CounterMode = TIM_COUNTERMODE_UP;
 
     HAL_TIM_Base_Init(&TimHandle5);
@@ -210,78 +211,79 @@ void Timer_init(void)
 	
 /**********************TIM8*************************************************************************/   	
 	
- //TIM8는 최대 84MHZ 이므로 속도 값이 크다.(500ms)
-    /* Compute the prescaler value to have TIM3 counter clock equal to 10 KHz */
-    uwPrescalerValue_Time8 = (uint32_t) ((SystemCoreClock)/16000000) - 1;
+// //TIM8는 최대 84MHZ 이므로 속도 값이 크다.(500ms)
+//    /* Compute the prescaler value to have TIM3 counter clock equal to 10 KHz */
+//    uwPrescalerValue_Time8 = (uint32_t) ((SystemCoreClock)/10000000) - 1;
 
-    /* Set TIMx instance */
-    TimHandle8.Instance = TIM8;
+//    /* Set TIMx instance */
+//    TimHandle8.Instance = TIM8;
 
-    TimHandle8.Init.Period = 10000-1; //주기.
-    TimHandle8.Init.Prescaler = uwPrescalerValue_Time8; //분주
-    TimHandle8.Init.ClockDivision = 0;
-    TimHandle8.Init.CounterMode = TIM_COUNTERMODE_UP;
-	TimHandle8.Init.RepetitionCounter = 0;
-	
-	HAL_TIM_PWM_Init(&TimHandle8);
-	
-//    HAL_TIM_Base_Init(&TimHandle3);
-//    HAL_TIM_Base_Start_IT(&TimHandle3);
+//    TimHandle8.Init.Period = 1000-1; //주기.
+//    TimHandle8.Init.Prescaler = uwPrescalerValue_Time8; //분주
+//    TimHandle8.Init.ClockDivision = 0;
+//    TimHandle8.Init.CounterMode = TIM_COUNTERMODE_UP;
+//	TimHandle8.Init.RepetitionCounter = 0;
+//	
+//	HAL_TIM_PWM_Init(&TimHandle8);
+//	
+////    HAL_TIM_Base_Init(&TimHandle3);
+////    HAL_TIM_Base_Start_IT(&TimHandle3);
 
-/*##-2- Configure the PWM channels #########################################*/
-  /* Common configuration for all channels */
-  Tim8Pwm.OCMode       = TIM_OCMODE_PWM1;
-  Tim8Pwm.OCPolarity   = TIM_OCPOLARITY_HIGH;
-  Tim8Pwm.OCFastMode   = TIM_OCFAST_DISABLE;
-  Tim8Pwm.OCNPolarity  = TIM_OCNPOLARITY_HIGH;
-  Tim8Pwm.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+///*##-2- Configure the PWM channels #########################################*/
+//  /* Common configuration for all channels */
+//  Tim8Pwm.OCMode       = TIM_OCMODE_PWM1;
+//  Tim8Pwm.OCPolarity   = TIM_OCPOLARITY_HIGH;
+//  Tim8Pwm.OCFastMode   = TIM_OCFAST_DISABLE;
+//  Tim8Pwm.OCNPolarity  = TIM_OCNPOLARITY_HIGH;
+//  Tim8Pwm.OCNIdleState = TIM_OCNIDLESTATE_RESET;
 
-  Tim8Pwm.OCIdleState  = TIM_OCIDLESTATE_RESET;
+//  Tim8Pwm.OCIdleState  = TIM_OCIDLESTATE_RESET;
 
-  /* Set the pulse value for channel 1 */
-  Tim8Pwm.Pulse = 999;
-  if (HAL_TIM_PWM_ConfigChannel(&TimHandle8, &Tim8Pwm, TIM_CHANNEL_1) != HAL_OK)
-  {
-    /* Configuration Error */
-    Timer_Error_Handler();
-  }
+//  /* Set the pulse value for channel 1 */
+//  Tim8Pwm.Pulse = 70;
+//  if (HAL_TIM_PWM_ConfigChannel(&TimHandle8, &Tim8Pwm, TIM_CHANNEL_1) != HAL_OK)
+//  {
+//    /* Configuration Error */
+//    Timer_Error_Handler();
+//  }
 
-  /* Set the pulse value for channel 2 */
-  Tim8Pwm.Pulse = 666;
-  if (HAL_TIM_PWM_ConfigChannel(&TimHandle8, &Tim8Pwm, TIM_CHANNEL_2) != HAL_OK)
-  {
-    /* Configuration Error */
-    Timer_Error_Handler();
-  }
+//  /* Set the pulse value for channel 2 */
+//  Tim8Pwm.Pulse = 50;
+//  if (HAL_TIM_PWM_ConfigChannel(&TimHandle8, &Tim8Pwm, TIM_CHANNEL_2) != HAL_OK)
+//  {
+//    /* Configuration Error */
+//    Timer_Error_Handler();
+//  }
 
-  /* Set the pulse value for channel 3 */
-  Tim8Pwm.Pulse = 333;
-  if (HAL_TIM_PWM_ConfigChannel(&TimHandle8, &Tim8Pwm, TIM_CHANNEL_3) != HAL_OK)
-  {
-    /* Configuration Error */
-    Timer_Error_Handler();
-  }
+//  /* Set the pulse value for channel 3 */
+//  Tim8Pwm.Pulse = 0;
+//  if (HAL_TIM_PWM_ConfigChannel(&TimHandle8, &Tim8Pwm, TIM_CHANNEL_3) != HAL_OK)
+//  {
+//    /* Configuration Error */
+//    Timer_Error_Handler();
+//  }
 
 
-  /*##-3- Start PWM signals generation #######################################*/
-  /* Start channel 1 */
-  if (HAL_TIM_PWM_Start(&TimHandle8, TIM_CHANNEL_1) != HAL_OK)
-  {
-    /* PWM Generation Error */
-    Timer_Error_Handler();
-  }
-  /* Start channel 2 */
-  if (HAL_TIM_PWM_Start(&TimHandle8, TIM_CHANNEL_2) != HAL_OK)
-  {
-    /* PWM Generation Error */
-    Timer_Error_Handler();
-  }
-  /* Start channel 3 */
-  if (HAL_TIM_PWM_Start(&TimHandle8, TIM_CHANNEL_3) != HAL_OK)
-  {
-    /* PWM generation Error */
-    Timer_Error_Handler();
-  }
+//  /*##-3- Start PWM signals generation #######################################*/
+//  /* Start channel 1 */
+//  if (HAL_TIM_PWM_Start(&TimHandle8, TIM_CHANNEL_1) != HAL_OK)
+//  {
+//    /* PWM Generation Error */
+//    Timer_Error_Handler();
+//  }
+//  /* Start channel 2 */
+//  if (HAL_TIM_PWM_Start(&TimHandle8, TIM_CHANNEL_2) != HAL_OK)
+//  {
+//    /* PWM Generation Error */
+//    Timer_Error_Handler();
+//  }
+//  /* Start channel 3 */
+//  if (HAL_TIM_PWM_Start(&TimHandle8, TIM_CHANNEL_3) != HAL_OK)
+//  {
+//    /* PWM generation Error */
+//    Timer_Error_Handler();
+//  }
+//  
 
 
 }
@@ -331,6 +333,7 @@ void TIM5_IRQHandler(void)
 * @retval-
 ******************************************************************************/
 int dTimerCnt4 = 0;
+
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -399,13 +402,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     }
 	else if(htim->Instance == TIM5) //100 us
 	{
+		
 		nTime_Flage_100us++;
 		
-		if(!(nTime_Flage_100us%3))
-		{
+		//if(!(nTime_Flage_100us%3))
+		//{
 			nLedPrintf_Flag = 1;
-			//LED_init(); // LED 디스 플레이 함수.
-		}
+		//	LED_init(); // LED 디스 플레이 함수.
+		//}
 		
 		
 	}

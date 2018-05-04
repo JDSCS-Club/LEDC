@@ -210,19 +210,19 @@ uint32_t sLedDataBuf[16];
 
 void LED_init(void)
 {
-		int sClkCnt = 0;
+	int sClkCnt = 0;
     int i;
 
     
     uint32_t A_Data = 0;
     uint32_t B_Data = 0;  
-		uint32_t C_Data = 0;
+	uint32_t C_Data = 0;
     uint32_t D_Data = 0;  
 	
     uint16_t sLine = 0;
     uint16_t ssLine = 0;
 	
-		uint16_t sLedColor = 0;
+	uint16_t sLedColor = 0;
 	
 	
     
@@ -233,23 +233,23 @@ void LED_init(void)
 			InputDataRouteNumReNumBer = InputDataRouteNum;
 			
 			//------------------------------------------폰트 데이타 구성 부분.
-					for(i=0;i<16;i++)
-					{
-					
-							A_Data = LED_FONTDATA[(ConvAsc2Hex(nKeypad_InputDataBuf[0])+16)][i];
-							B_Data = LED_FONTDATA[(ConvAsc2Hex(nKeypad_InputDataBuf[1])+16)][i];
-							
-							C_Data = LED_FONTDATA[(ConvAsc2Hex(nKeypad_InputDataBuf[2])+16)][i];
-							//D_Data |= LED_FONTDATA[(nKeypad_InputDataBuf[3]+16)][i];
-							
-							D_Data = A_Data << 24;
-							D_Data |= B_Data << 12;
-							D_Data |= C_Data;
+				for(i=0;i<16;i++)
+				{
+				
+						A_Data = LED_FONTDATA[(ConvAsc2Hex(nKeypad_InputDataBuf[0])+16)][i];
+						B_Data = LED_FONTDATA[(ConvAsc2Hex(nKeypad_InputDataBuf[1])+16)][i];
 						
-							sLedDataBuf[i]  = D_Data;
-							//sLedDataBuf[i]  |= B_Data;
+						C_Data = LED_FONTDATA[(ConvAsc2Hex(nKeypad_InputDataBuf[2])+16)][i];
+						//D_Data |= LED_FONTDATA[(nKeypad_InputDataBuf[3]+16)][i];
+						
+						D_Data = A_Data << 24;
+						D_Data |= B_Data << 12;
+						D_Data |= C_Data;
+					
+						sLedDataBuf[i]  = D_Data;
+						//sLedDataBuf[i]  |= B_Data;
 
-					}
+				}
 		}
 
 	//------------------------------------------어드레스 설정 부분.
@@ -263,7 +263,7 @@ void LED_init(void)
 			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_5, ((sLine & 0x02) ? GPIO_PIN_SET : GPIO_PIN_RESET));  //A1
 			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, ((sLine & 0x04) ? GPIO_PIN_SET : GPIO_PIN_RESET));  //A2      
 			
-	//------------------------------------------데이타 전송 부분
+	//-----------------------------11111-------------데이타 전송 부분
 	
 			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_SET); // OE - High
 			
@@ -273,18 +273,16 @@ void LED_init(void)
 			
 			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_RESET); // OE - Low
 			
-			sLedColor = (mLEDAddCnt/8)%(3 + nLED_Light_Step*4);
-		
-		if(!sLedColor)
-		{
-			mPrint1++;
+			//sLedColor = (mLEDAddCnt/8)%(3 + nLED_Light_Step*4);
+			
+			for(i=0;i<1000;i++){}
 			
 			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // Blue 설정.
 			{
 			   
 
 			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
-		 
+		 					
 			   //노랑
 			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));  // G0 High
 			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
@@ -301,182 +299,626 @@ void LED_init(void)
 	 
 				
 			}
-		}
-		else if(sLedColor==1)
-		{
-			mPrint2++;
+			
+			
+	//-----------------------------22222-------------데이타 전송 부분			
+			for(i=0;i<1000;i++){}
+			
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_SET); // OE - High
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_SET); // LAT - High
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_RESET); // LAT - Low
+			
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_RESET); // OE - Low
+			
+			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // Blue 설정.
+			{
+			   
 
-			for(sClkCnt = 0;sClkCnt<32;sClkCnt++)// RED 설정.
+			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+		 					
+				
+				if(sClkCnt >= 8)
+				{
+			   //노랑
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+				}
+				else
+				{
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					
+				}
+				
+				
+			   
+
+			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+	 
+				
+			}
+		
+			
+	//-----------------------------3333-------------데이타 전송 부분				
+			for(i=0;i<1000;i++){}
+				
+							
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_SET); // OE - High
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_SET); // LAT - High
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_RESET); // LAT - Low
+			
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_RESET); // OE - Low
+			
+			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // Blue 설정.
+			{
+			   
+
+			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+		 					
+				
+				if(sClkCnt >= 8)
+				{
+			   //노랑
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+				}
+				else
+				{
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					
+				}
+				
+				
+
+
+			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+	 
+				
+			}
+			
+	//-----------------------------4444-------------데이타 전송 부분			
+			for(i=0;i<1000;i++){}
+				
+				
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_SET); // OE - High
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_SET); // LAT - High
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_RESET); // LAT - Low
+			
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_RESET); // OE - Low
+			
+			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // Blue 설정.
 			{
 			   
 
 			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
 		 
+				
+//				if((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01)
+//				{
+//					
+//					TIM3->CCR1 = 70;
+//					TIM3->CCR2 = 20;
+//					TIM3->CCR3 = 0;
+//					
+//					TIM8->CCR1 = 70;
+//					TIM8->CCR2 = 20;
+//					TIM8->CCR3 = 0;
+//				}
+//				else
+//				{
+//					TIM3->CCR1 = 0;
+//					TIM3->CCR2 = 0;
+//					TIM3->CCR3 = 0;
+//					
+//					TIM8->CCR1 = 0;
+//					TIM8->CCR2 = 0;
+//					TIM8->CCR3 = 0;
+//				}
+				
+				
+				
+					
+			  if(sClkCnt >= 16)
+				{
 			   //노랑
-			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
-			   
+					  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+					   
 
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+				}
+				else
+				{
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					
+				}
+				
 			   
 
 			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
 	 
+				
 			}
-		}
-		else if(sLedColor==2)
-		{
-			mPrint3++;
-			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) //RED 설정.
+			
+			
+	//-----------------------------5555-------------데이타 전송 부분	
+			
+			for(i=0;i<1000;i++){}
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_SET); // OE - High
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_SET); // LAT - High
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_RESET); // LAT - Low
+			
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_RESET); // OE - Low
+			
+			//sLedColor = (mLEDAddCnt/8)%(3 + nLED_Light_Step*4);
+			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // Blue 설정.
+			{
+			
+				HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+			
+			 if(sClkCnt >= 16)
+				{
+			   //노랑
+					  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+				}
+				else
+				{
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					
+				}
+				
+				HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+				
+			}
+			
+			
+	//-----------------------------6666-------------데이타 전송 부분				
+			for(i=0;i<1000;i++){}
+			
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_SET); // OE - High
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_SET); // LAT - High
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_RESET); // LAT - Low
+			
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_RESET); // OE - Low
+			
+			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // Blue 설정.
+			{
+			   
+
+			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+		 					
+				
+				if(sClkCnt >= 24)
+				{
+			   //노랑
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+				}
+				else
+				{
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					
+				}
+				
+				
+			   
+
+			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+	 
+				
+			}
+	//-----------------------------7777-------------데이타 전송 부분	
+			for(i=0;i<1000;i++){}
+				
+							
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_SET); // OE - High
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_SET); // LAT - High
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_RESET); // LAT - Low
+			
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_RESET); // OE - Low
+			
+			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // Blue 설정.
+			{
+			   
+
+			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+		 					
+				
+				if(sClkCnt >= 24)
+				{
+			   //노랑
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+				}
+				else
+				{
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					
+				}
+				
+				
+
+
+			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+	 
+				
+			}
+			
+	//-----------------------------8888-------------데이타 전송 부분			
+			for(i=0;i<1000;i++){}
+				
+				
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_SET); // OE - High
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_SET); // LAT - High
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_8,GPIO_PIN_RESET); // LAT - Low
+			
+			
+			HAL_GPIO_WritePin(GPIOF,GPIO_PIN_9,GPIO_PIN_RESET); // OE - Low
+			
+			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // Blue 설정.
 			{
 			   
 
 			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
 		 
+				
+//				if((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01)
+//				{
+//					
+//					TIM3->CCR1 = 70;
+//					TIM3->CCR2 = 20;
+//					TIM3->CCR3 = 0;
+//					
+//					TIM8->CCR1 = 70;
+//					TIM8->CCR2 = 20;
+//					TIM8->CCR3 = 0;
+//				}
+//				else
+//				{
+//					TIM3->CCR1 = 0;
+//					TIM3->CCR2 = 0;
+//					TIM3->CCR3 = 0;
+//					
+//					TIM8->CCR1 = 0;
+//					TIM8->CCR2 = 0;
+//					TIM8->CCR3 = 0;
+//				}
+				
+				
+				
+					
+			  if(sClkCnt >= 24)
+				{
 			   //노랑
-			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
-			   
+					  HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+					   
 
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+				}
+				else
+				{
+					   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));  // G0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+					   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					   
+
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));      // G0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+					   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+					
+				}
+				
 			   
 
 			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
 	 
+				
 			}
 			
-		}
-		else if(sLedColor==3)
-		{
-			mPrint4++;
-			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // 공백 
-			{
-			   
-
-			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
-		 
-			   //노랑
-			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6, (((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
-			   
-
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
-			   
-
-			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
-	 
-			}
 			
-		}
-		else if(sLedColor==4)
-		{
-			mPrint5++;
-			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // 공백
-			{
-			   
-
-			    HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
-		 
-			   //노랑
-			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6, (((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
-			   
-
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
-			   
-
-			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
-	 
-			}
 			
-		}
-		else if(sLedColor==5)
-		{
-			mPrint6++;
-			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // 공백
-			{
-			   
-
-			    HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
-		 
-			   //노랑
-			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6, (((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
-			   
-
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
-			   
-
-			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
-	 
-			}
 			
-		}
-		else if(sLedColor==6)
-		{
-			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // 공백
-			{
-			   
-
-			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
-		 
-			   //노랑
-			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6, (((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
-			   
-
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
-			   
-
-			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
-	 
-			}
+		HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+		
 			
-		}
-		else if(sLedColor==7)
-		{
-			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // 공백
-			{
-			   
-
-			     HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
-		 
-			   //노랑
-			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6, (((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
-			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
-			   
-
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
-			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
-			   
-
-			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
-	 
-			}
 			
-		}
+//		if(!sLedColor)
+//		{
+//			mPrint1++;
+//			
+//			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // Blue 설정.
+//			{
+//			   
 
-        HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+//		 
+//			   //노랑
+//			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));  // G0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));      // G0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+//				
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+//	 
+//				
+//			}
+//		}
+//		else if(sLedColor==1)
+//		{
+//			mPrint2++;
+
+//			for(sClkCnt = 0;sClkCnt<32;sClkCnt++)// RED 설정.
+//			{
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+//		 
+//			   //노랑
+//			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+//	 
+//			}
+//		}
+//		else if(sLedColor==2)
+//		{
+//			mPrint3++;
+//			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) //RED 설정.
+//			{
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+//		 
+//			   //노랑
+//			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_SET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+//	 
+//			}
+//			
+//		}
+//		else if(sLedColor==3)
+//		{
+//			mPrint4++;
+//			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // 공백 
+//			{
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+//		 
+//			   //노랑
+//			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6, (((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+//	 
+//			}
+//			
+//		}
+//		else if(sLedColor==4)
+//		{
+//			mPrint5++;
+//			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // 공백
+//			{
+//			   
+
+//			    HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+//		 
+//			   //노랑
+//			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6, (((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+//	 
+//			}
+//			
+//		}
+//		else if(sLedColor==5)
+//		{
+//			mPrint6++;
+//			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // 공백
+//			{
+//			   
+
+//			    HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+//		 
+//			   //노랑
+//			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6, (((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+//	 
+//			}
+//			
+//		}
+//		else if(sLedColor==6)
+//		{
+//			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // 공백
+//			{
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+//		 
+//			   //노랑
+//			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6, (((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+//	 
+//			}
+//			
+//		}
+//		else if(sLedColor==7)
+//		{
+//			for(sClkCnt = 0;sClkCnt<32;sClkCnt++) // 공백
+//			{
+//			   
+
+//			     HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_RESET); // CLK Low
+//		 
+//			   //노랑
+//			   HAL_GPIO_WritePin(GPIOA,GPIO_PIN_6, (((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // G0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_5,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));  // B0 High
+//			   HAL_GPIO_WritePin(GPIOB,GPIO_PIN_0,(((sLedDataBuf[ssLine]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_6,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));      // G0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_7,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // B0 High
+//			   HAL_GPIO_WritePin(GPIOC,GPIO_PIN_8,(((sLedDataBuf[ssLine+8]>>(31-sClkCnt)) & 0x01) ? GPIO_PIN_RESET : GPIO_PIN_RESET));    // R0 High
+//			   
+
+//			   HAL_GPIO_WritePin(GPIOF,GPIO_PIN_7,GPIO_PIN_SET); // CLK High
+//	 
+//			}
+//			
+//		}
+
+
         
   
 
